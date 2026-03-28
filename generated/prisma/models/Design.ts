@@ -1045,6 +1045,7 @@ export type DesignCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * The data used to create many Designs.
    */
   data: Prisma.DesignCreateManyInput | Prisma.DesignCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1063,6 +1064,7 @@ export type DesignCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    * The data used to create many Designs.
    */
   data: Prisma.DesignCreateManyInput | Prisma.DesignCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
