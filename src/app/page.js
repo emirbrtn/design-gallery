@@ -81,7 +81,7 @@ export default function HomePage() {
           />
         </div>
 
-        <div className="mt-10">
+        <div className="mt-10 max-h-[68vh] overflow-y-auto rounded-[2rem] pr-1 md:max-h-[72vh] md:pr-3">
           {loading ? (
             <p className="text-center text-neutral-500">Yükleniyor...</p>
           ) : (
@@ -89,6 +89,12 @@ export default function HomePage() {
           )}
         </div>
       </section>
+
+      <footer className="border-t border-black/10 bg-[#efe7da]">
+        <div className="mx-auto max-w-7xl px-4 py-5 text-center text-sm text-neutral-600">
+          Yapımcı: Emircan Bartan
+        </div>
+      </footer>
 
       <BackToTopButton />
     </main>
