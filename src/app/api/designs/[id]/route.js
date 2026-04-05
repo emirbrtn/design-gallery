@@ -1,6 +1,7 @@
-import { prisma } from "@/lib/prisma";
+import { getDesignCollection } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { ObjectId } from "mongodb";
 import { getAdminCookieName, verifyAdminSessionToken } from "@/lib/admin-auth";
 
 async function requireAdmin() {
@@ -18,18 +19,23 @@ export async function DELETE(request, context) {
 
   try {
     const params = await context.params;
-    const id = Number(params.id);
+    const id = params.id;
 
-    if (!id || Number.isNaN(id)) {
+    if (!id || !ObjectId.isValid(id)) {
       return NextResponse.json(
         { error: "Geçersiz tasarım ID." },
         { status: 400 },
       );
     }
 
-    await prisma.design.delete({
-      where: { id },
+    const collection = await getDesignCollection();
+    const result = await collection.deleteOne({
+      _id: new ObjectId(id),
     });
+
+    if (!result.deletedCount) {
+      return NextResponse.json({ error: "Tasarım bulunamadı." }, { status: 404 });
+    }
 
     return NextResponse.json({ success: true, deletedId: id });
   } catch (error) {

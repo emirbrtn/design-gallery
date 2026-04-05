@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getDesignCollection, serializeDesign } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getAdminCookieName, verifyAdminSessionToken } from "@/lib/admin-auth";
@@ -11,11 +11,10 @@ async function requireAdmin() {
 
 export async function GET() {
   try {
-    const designs = await prisma.design.findMany({
-      orderBy: { createdAt: "desc" },
-    });
+    const collection = await getDesignCollection();
+    const designs = await collection.find({}).sort({ createdAt: -1 }).toArray();
 
-    return NextResponse.json(designs);
+    return NextResponse.json(designs.map(serializeDesign));
   } catch (error) {
     console.error("GET /api/designs error:", error);
     return NextResponse.json(
@@ -43,15 +42,23 @@ export async function POST(request) {
       );
     }
 
-    const design = await prisma.design.create({
-      data: {
-        title,
-        category,
-        image,
-      },
-    });
+    const collection = await getDesignCollection();
+    const design = {
+      title: title.trim(),
+      category: category.trim(),
+      image: image.trim(),
+      createdAt: new Date(),
+    };
 
-    return NextResponse.json(design, { status: 201 });
+    const result = await collection.insertOne(design);
+
+    return NextResponse.json(
+      serializeDesign({
+        _id: result.insertedId,
+        ...design,
+      }),
+      { status: 201 },
+    );
   } catch (error) {
     console.error("POST /api/designs error:", error);
     return NextResponse.json(
