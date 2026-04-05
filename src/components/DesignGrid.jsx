@@ -10,9 +10,9 @@ export default function DesignGrid({ items }) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {items.map((design) => (
-        <DesignCard key={design.id} design={design} />
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 xl:grid-cols-4">
+      {items.map((design, index) => (
+        <DesignCard key={design.id} design={design} index={index} />
       ))}
     </div>
   );

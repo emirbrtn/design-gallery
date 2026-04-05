@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Header from "@/components/Header";
 import CategoryTabs from "@/components/CategoryTabs";
 import DesignGrid from "@/components/DesignGrid";
+import BackToTopButton from "@/components/BackToTopButton";
 
 export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("sonsuz");
@@ -22,7 +23,7 @@ export default function HomePage() {
 
       const data = await res.json();
       setDesigns(Array.isArray(data) ? data : []);
-    } catch (error) {
+    } catch {
       setDesigns([]);
     } finally {
       if (showLoader) {
@@ -88,6 +89,8 @@ export default function HomePage() {
           )}
         </div>
       </section>
+
+      <BackToTopButton />
     </main>
   );
 }

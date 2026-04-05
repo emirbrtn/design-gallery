@@ -1,6 +1,22 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 export default function ImageModal({ image, title, isOpen, onClose }) {
+  const [isImageReady, setIsImageReady] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen || !image) {
+      setIsImageReady(false);
+      return;
+    }
+
+    const preloadImage = new window.Image();
+    preloadImage.src = image;
+    preloadImage.decoding = "async";
+    preloadImage.onload = () => setIsImageReady(true);
+  }, [image, isOpen]);
+
   if (!isOpen || !image) return null;
 
   return (
@@ -21,10 +37,19 @@ export default function ImageModal({ image, title, isOpen, onClose }) {
         </button>
 
         <div className="overflow-hidden rounded-2xl bg-white shadow-2xl">
+          {!isImageReady ? (
+            <div className="flex h-[60vh] items-center justify-center bg-neutral-100 text-neutral-500">
+              Görsel hazırlanıyor...
+            </div>
+          ) : null}
+
           <img
             src={image}
             alt={title}
-            className="max-h-[80vh] w-auto mx-auto object-contain"
+            className={`mx-auto max-h-[80vh] w-auto object-contain transition duration-300 ${
+              isImageReady ? "opacity-100" : "opacity-0"
+            }`}
+            decoding="async"
           />
         </div>
 
