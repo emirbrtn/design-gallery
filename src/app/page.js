@@ -92,7 +92,7 @@ export default function HomePage() {
 
       <footer className="border-t border-black/10 bg-[#efe7da]">
         <div className="mx-auto max-w-7xl px-4 py-5 text-center text-sm text-neutral-600">
-          Yapımcı: Emircan Bartan
+          Crafted by Emircan Bartan
         </div>
       </footer>
 
