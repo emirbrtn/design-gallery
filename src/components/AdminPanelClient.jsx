@@ -152,8 +152,8 @@ export default function AdminPanelClient() {
           </button>
         </div>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-2">
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+        <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:items-start">
+          <div className="rounded-2xl bg-white p-6 shadow-sm lg:sticky lg:top-6">
             <h2 className="text-xl font-semibold text-neutral-900">
               Yeni Tasarım Ekle
             </h2>
@@ -269,7 +269,7 @@ export default function AdminPanelClient() {
               })}
             </div>
 
-            <div className="mt-6 space-y-4">
+            <div className="mt-6 space-y-4 lg:max-h-[70vh] lg:overflow-y-auto lg:pr-2">
               {filteredItems.length === 0 ? (
                 <p className="text-neutral-500">
                   Bu kategoride henüz kayıt yok.
