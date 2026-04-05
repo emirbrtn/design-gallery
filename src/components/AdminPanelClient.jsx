@@ -203,6 +203,9 @@ export default function AdminPanelClient() {
                       }));
                       setMessage("Görsel yüklendi.");
                     }}
+                    onError={(errorMessage) => {
+                      setMessage(errorMessage);
+                    }}
                   />
 
                   <input

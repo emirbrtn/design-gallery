@@ -1,65 +1,111 @@
 "use client";
 
-import { useEffect } from "react";
+import Script from "next/script";
+import { useEffect, useRef, useState } from "react";
 
-export default function CloudinaryUploadButton({ onUpload }) {
+const SCRIPT_ID = "cloudinary-widget-script";
+
+export default function CloudinaryUploadButton({ onUpload, onError }) {
+  const widgetRef = useRef(null);
+  const [scriptReady, setScriptReady] = useState(false);
+  const [widgetLoading, setWidgetLoading] = useState(true);
+
   useEffect(() => {
-    if (document.getElementById("cloudinary-widget-script")) return;
-
-    const script = document.createElement("script");
-    script.id = "cloudinary-widget-script";
-    script.src = "https://upload-widget.cloudinary.com/latest/global/all.js";
-    script.async = true;
-    document.body.appendChild(script);
+    if (window.cloudinary) {
+      setScriptReady(true);
+      setWidgetLoading(false);
+    }
   }, []);
+
+  function handleScriptReady() {
+    setScriptReady(true);
+    setWidgetLoading(false);
+  }
+
+  function buildWidget() {
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset || !window.cloudinary) {
+      return null;
+    }
+
+    return window.cloudinary.createUploadWidget(
+      {
+        cloudName,
+        uploadPreset,
+        sources: ["local"],
+        multiple: false,
+        resourceType: "image",
+        folder: "harun-designs",
+        clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
+        maxFiles: 1,
+        maxImageFileSize: 5_000_000,
+        singleUploadAutoClose: true,
+        showAdvancedOptions: false,
+        showSkipCropButton: false,
+        cropping: false,
+      },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary upload error:", error);
+          onError?.("Görsel yükleme sırasında bir hata oluştu.");
+          return;
+        }
+
+        if (result?.event === "success") {
+          onUpload(result.info.secure_url);
+        }
+      },
+    );
+  }
+
+  function prepareWidget() {
+    if (!scriptReady || widgetRef.current) return;
+    widgetRef.current = buildWidget();
+  }
 
   function openWidget() {
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
     if (!cloudName || !uploadPreset) {
-      alert("Cloudinary bilgileri eksik.");
+      onError?.("Cloudinary bilgileri eksik.");
       return;
     }
 
-    if (!window.cloudinary) {
-      alert("Cloudinary widget henüz yüklenmedi.");
+    if (!scriptReady || !window.cloudinary) {
+      setWidgetLoading(true);
+      onError?.("Yükleyici hazırlanıyor, lütfen 1-2 saniye sonra tekrar deneyin.");
       return;
     }
 
-    const widget = window.cloudinary.createUploadWidget(
-      {
-        cloudName,
-        uploadPreset,
-        sources: ["local", "url", "camera"],
-        multiple: false,
-        resourceType: "image",
-        folder: "harun-designs",
-        clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
-        maxFiles: 1,
-      },
-      (error, result) => {
-        if (error) {
-          console.error("Cloudinary upload error:", error);
-          return;
-        }
+    if (!widgetRef.current) {
+      widgetRef.current = buildWidget();
+    }
 
-        if (result && result.event === "success") {
-          onUpload(result.info.secure_url);
-        }
-      },
-    );
-
-    widget.open();
+    widgetRef.current?.open();
   }
 
   return (
-    <button
-      type="button"
-      onClick={openWidget}
-      className="rounded-xl border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-800 transition hover:border-black"
-    >
-      Bilgisayardan Görsel Seç
-    </button>
+    <>
+      <Script
+        id={SCRIPT_ID}
+        src="https://upload-widget.cloudinary.com/latest/global/all.js"
+        strategy="afterInteractive"
+        onLoad={handleScriptReady}
+      />
+
+      <button
+        type="button"
+        onClick={openWidget}
+        onPointerEnter={prepareWidget}
+        onFocus={prepareWidget}
+        disabled={widgetLoading}
+        className="rounded-xl border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-800 transition hover:border-black disabled:cursor-wait disabled:opacity-70"
+      >
+        {widgetLoading ? "Yükleyici hazırlanıyor..." : "Bilgisayardan Görsel Seç"}
+      </button>
+    </>
   );
 }
