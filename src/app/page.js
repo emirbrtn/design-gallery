@@ -9,12 +9,12 @@ import BackToTopButton from "@/components/BackToTopButton";
 const catalogFiles = [
   {
     title: "Toplu Katalog 1",
-    href: "/catalogs/toplu-katalog-1.pdf",
+    href: "https://media.githubusercontent.com/media/emirbrtn/design-gallery/main/public/catalogs/toplu-katalog-1.pdf",
     size: "96.5 MB",
   },
   {
     title: "Toplu Katalog 2",
-    href: "/catalogs/toplu-katalog-2.pdf",
+    href: "https://media.githubusercontent.com/media/emirbrtn/design-gallery/main/public/catalogs/toplu-katalog-2.pdf",
     size: "148.8 MB",
   },
 ];
@@ -138,7 +138,8 @@ export default function HomePage() {
 
                 <a
                   href={catalog.href}
-                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="mt-6 inline-flex w-full items-center justify-center rounded-full border border-[#d6a85f] bg-[#d6a85f] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:border-[#b9893d] hover:bg-[#b9893d]"
                 >
                   İndir
