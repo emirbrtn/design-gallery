@@ -14,7 +14,6 @@ const initialForm = {
 const categories = [
   { key: "sonsuz", label: "Sonsuz" },
   { key: "parca", label: "Parça" },
-  { key: "rulo", label: "Rulo" },
 ];
 
 export default function AdminPanelClient() {
@@ -185,7 +184,6 @@ export default function AdminPanelClient() {
                 >
                   <option value="sonsuz">Sonsuz</option>
                   <option value="parca">Parça</option>
-                  <option value="rulo">Rulo</option>
                 </select>
               </div>
 
