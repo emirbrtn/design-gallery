@@ -23,10 +23,12 @@ export default function ImageModal({ image, title, isOpen, onClose }) {
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 py-6"
       onClick={onClose}
+      onContextMenu={(e) => e.preventDefault()}
     >
       <div
         className="relative w-full max-w-5xl"
         onClick={(e) => e.stopPropagation()}
+        onContextMenu={(e) => e.preventDefault()}
       >
         <button
           type="button"
@@ -36,7 +38,10 @@ export default function ImageModal({ image, title, isOpen, onClose }) {
           Kapat
         </button>
 
-        <div className="overflow-hidden rounded-2xl bg-white shadow-2xl">
+        <div
+          className="overflow-hidden rounded-2xl bg-white shadow-2xl"
+          onContextMenu={(e) => e.preventDefault()}
+        >
           {!isImageReady ? (
             <div className="flex h-[60vh] items-center justify-center bg-neutral-100 text-neutral-500">
               Görsel hazırlanıyor...
@@ -46,10 +51,18 @@ export default function ImageModal({ image, title, isOpen, onClose }) {
           <img
             src={image}
             alt={title}
-            className={`mx-auto max-h-[80vh] w-auto object-contain transition duration-300 ${
+            className={`pointer-events-none mx-auto max-h-[80vh] w-auto select-none object-contain transition duration-300 ${
               isImageReady ? "opacity-100" : "opacity-0"
             }`}
+            draggable={false}
             decoding="async"
+            onContextMenu={(e) => e.preventDefault()}
+            onDragStart={(e) => e.preventDefault()}
+            style={{
+              userSelect: "none",
+              WebkitUserDrag: "none",
+              WebkitTouchCallout: "none",
+            }}
           />
         </div>
 

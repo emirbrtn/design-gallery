@@ -25,9 +25,13 @@ export default function DesignCard({ design, index = 0 }) {
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="block w-full text-left"
+          onContextMenu={(e) => e.preventDefault()}
+          className="block w-full select-none text-left"
         >
-          <div className="relative aspect-[4/5] w-full overflow-hidden bg-neutral-200">
+          <div
+            className="relative aspect-[4/5] w-full overflow-hidden bg-neutral-200"
+            onContextMenu={(e) => e.preventDefault()}
+          >
             {!isLoaded ? (
               <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-neutral-200 via-neutral-100 to-neutral-200" />
             ) : null}
@@ -35,13 +39,21 @@ export default function DesignCard({ design, index = 0 }) {
             <img
               src={cardImage}
               alt={design.title}
-              className={`h-full w-full object-cover transition duration-500 hover:scale-105 ${
+              className={`pointer-events-none h-full w-full select-none object-cover transition duration-500 hover:scale-105 ${
                 isLoaded ? "opacity-100" : "opacity-0"
               }`}
+              draggable={false}
               loading={eagerLoad ? "eager" : "lazy"}
               fetchPriority={eagerLoad ? "high" : "auto"}
               decoding="async"
               onLoad={() => setIsLoaded(true)}
+              onContextMenu={(e) => e.preventDefault()}
+              onDragStart={(e) => e.preventDefault()}
+              style={{
+                userSelect: "none",
+                WebkitUserDrag: "none",
+                WebkitTouchCallout: "none",
+              }}
             />
           </div>
         </button>
